@@ -1,24 +1,35 @@
-Triangle triangle;
+  import java.util.Stack;
 
+Stack<Triangle> triangleStack;
+ArrayList<Triangle> triangles;
+
+final int minTriSize = 50;
 
 void setup() {
-  size(500, 500);
-  triangle = new Triangle(new PVector(0, 0), new PVector(width / 2f, height), new PVector(width, 0));
-  
+  size(900, 900);
+  triangleStack = new Stack<Triangle>();
+  Triangle triangle = new Triangle(new PVector(0, 0), new PVector(width / 2f, height), new PVector(width, 0));
+  triangleStack.push(triangle);
+  triangles = new ArrayList<Triangle>();
 }
 
 void draw() {
   background(255);
-  triforce(triangle);
+  triforce();
+  for(Triangle tri : triangles) {
+    tri.display();
+  }
 }
 
-void triforce(Triangle t) {
-  if(t.perimeter() <= 100) {
+void triforce() {
+  if(triangleStack.isEmpty()) return;
+  Triangle t = triangleStack.pop();
+  if(t.perimeter() <= minTriSize) {
+    triangles.add(t);
     return;
   }
   Triangle[] midtriangles = t.midTriangles();
   for(Triangle tri : midtriangles) {
-    triforce(tri);
+    triangleStack.push(tri);
   }
-  t.display();
 }
